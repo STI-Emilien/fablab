@@ -1,0 +1,41 @@
+/* connexion.css */
+
+#login-container {
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#login-container h1 {
+    margin-bottom: 20px;
+}
+
+#login-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#login-container button {
+    padding: 10px 20px;
+    font-size: 18px;
+    margin: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+#login-container button:hover {
+    background-color: #45a049;
+}
+
+#error-message {
+    color: red;
+    margin-top: 10px;
+}

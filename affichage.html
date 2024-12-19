@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File d'attente - Affichage</title>
+    <link rel="stylesheet" href="file-ecran.css">
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+</head>
+<body>
+    <div id="queue-container">
+        <table id="demande-table">
+            <thead>
+                <tr>
+                    <th>Place</th>
+                    <th>Nom de l'élève</th>
+                    <th>Heure</th>
+                </tr>
+            </thead>
+            <tbody id="demande-list">
+                <!-- Les demandes seront ajoutées ici dynamiquement -->
+            </tbody>
+        </table>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+    
+        
+        // Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBMZIocSRwTKvwJDP6630ppQtMqjD1S86A",
+  authDomain: "fablab-ab8c1.firebaseapp.com",
+  projectId: "fablab-ab8c1",
+  storageBucket: "fablab-ab8c1.firebasestorage.app",
+  messagingSenderId: "209480897063",
+  appId: "1:209480897063:web:565ac491b4a29a99acf402"
+};
+    
+        // Initialisation Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+    
+        // Référence à la collection des demandes triée par timestamp croissant
+        const demandesRef = query(collection(db, "demandes"), orderBy("timestamp", "asc"));
+
+        // Sélectionner l'élément du tableau
+        const tableau = document.getElementById("demande-list");
+    
+        // Fonction pour afficher les demandes dans le tableau
+        onSnapshot(demandesRef, (snapshot) => {
+            tableau.innerHTML = ""; // Réinitialise le tableau
+            let index = 1; // Utilisé pour afficher un ordre séquentiel
+    
+            // Log pour vérifier que la snapshot arrive bien
+            console.log("Snapshot reçu:", snapshot.docs.length, "demandes");
+    
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+    
+                // Log les données récupérées
+                console.log("Données du document:", data);
+    
+                // Vérification si les données sont présentes
+                const nom = data.nom || "Nom inconnu";
+    
+                // Formatage du timestamp
+                let heure = "Heure inconnue";
+                if (data.timestamp) {
+                    const timestamp = data.timestamp.seconds * 1000; // Convertir en millisecondes
+                    const dateObj = new Date(timestamp);
+                    const hours = dateObj.getHours().toString().padStart(2, '0');
+                    const minutes = dateObj.getMinutes().toString().padStart(2, '0');
+                    heure = `${hours}:${minutes}`;
+                }
+    
+                // Crée une ligne dans le tableau
+                const row = document.createElement("tr");
+    
+                row.innerHTML = ` 
+                    <td>${index++}</td> <!-- Affiche l'ordre -->
+                    <td>${nom}</td>
+                    <td>${heure}</td>
+                `;
+    
+                // Ajoute la ligne au tableau
+                tableau.appendChild(row);
+            });
+        });
+    </script>
+</body>
+</html>
